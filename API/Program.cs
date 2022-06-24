@@ -1,5 +1,10 @@
 using API.Data;
 using Microsoft.EntityFrameworkCore;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 internal class Program
 {
@@ -13,6 +18,19 @@ internal class Program
                 options.UseSqlServer(connnectionString);
         });
         builder.Services.AddCors();
+        var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])) ;
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options=>{
+                options.TokenValidationParameters= new TokenValidationParameters{
+                    ValidateIssuerSigningKey=true,
+                ValidateIssuer=false,
+                ValidateAudience=false,
+                IssuerSigningKey=key,
+                ClockSkew=TimeSpan.Zero
+                };
+            });
+        //addscoped lifetime is till http request time
+        builder.Services.AddScoped<ITokenService,TokenService>();
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +48,7 @@ internal class Program
         app.UseHttpsRedirection();
 
         app.UseCors(policy=>policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
