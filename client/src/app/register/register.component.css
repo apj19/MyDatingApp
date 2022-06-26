@@ -1,0 +1,12 @@
+.container{
+    text-align: center;
+    justify-content: center;
+}
+
+.row{
+    justify-content: center; 
+}
+
+.btn{
+    margin-left: 20px;
+}
