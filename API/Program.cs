@@ -5,6 +5,8 @@ using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using API.Repository;
+using API.AutoMapper;
 
 internal class Program
 {
@@ -31,6 +33,8 @@ internal class Program
             });
         //addscoped lifetime is till http request time
         builder.Services.AddScoped<ITokenService,TokenService>();
+        builder.Services.AddScoped<IUserRepository,UserRepository>();
+        builder.Services.AddAutoMapper(typeof(MapperProfile));
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();

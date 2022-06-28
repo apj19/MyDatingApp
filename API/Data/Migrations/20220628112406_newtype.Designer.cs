@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220628112406_newtype")]
+    partial class newtype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,12 +68,42 @@ namespace API.Data.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<int>("PhotoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("API.Entites.MyPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.ToTable("MyPhotos");
                 });
 
             modelBuilder.Entity("API.Entites.Photo", b =>
@@ -101,10 +133,17 @@ namespace API.Data.Migrations
                     b.ToTable("Photos");
                 });
 
+            modelBuilder.Entity("API.Entites.MyPhoto", b =>
+                {
+                    b.HasOne("API.Entites.AppUser", null)
+                        .WithMany("MyPhotos")
+                        .HasForeignKey("PhotoId");
+                });
+
             modelBuilder.Entity("API.Entites.Photo", b =>
                 {
                     b.HasOne("API.Entites.AppUser", "AppUser")
-                        .WithMany("Photos")
+                        .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -114,7 +153,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entites.AppUser", b =>
                 {
-                    b.Navigation("Photos");
+                    b.Navigation("MyPhotos");
                 });
 #pragma warning restore 612, 618
         }
