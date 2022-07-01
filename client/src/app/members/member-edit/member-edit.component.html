@@ -1,0 +1,87 @@
+<div class="container mt-4">
+  <div class="row" *ngIf="member">
+    <div class="col-4">
+      <h1>Your Profile</h1>
+    </div>
+    <div class="col-8" >
+      <div class="alert alert-info" *ngIf="editFrom.dirty">
+        <p>
+          <strong>Information</strong> You have made changes. any unsaved
+          changes will be lost.
+        </p>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <img
+          src="{{ member.photoUrl }}"
+          alt="{{member.knownAs}"
+
+          class="card-img-top img-thumbnail"
+
+        />
+      </div>
+      <div class="card-body">
+        <div>
+          <strong>Location:</strong>
+          <p>{{ member.city }},{{ member.country }}</p>
+
+          <strong>Age:</strong>
+          <p>{{ member.age }}</p>
+
+          <strong>Member Since:</strong>
+          <p>{{ member.created }}</p>
+
+          <strong>Last Active:</strong>
+          <p>{{ member.lastActive }}</p>
+        </div>
+      </div>
+      
+        
+        
+      
+    </div>
+    <div class="col-8">
+      <tabset class="member-tabset">
+        <tab heading="{{ member.knownAs|uppercase }}">
+        <form #editFrom="ngForm" id="editForm" (ngSubmit)="UpdateMember()">
+ 
+          <h4 class="mt-2">Description</h4>
+          <textarea  [(ngModel)]="member.introduction" class="form-control" name="introduction"  rows="4"></textarea>
+          <h4 class="mt-2">looking For</h4>
+          <textarea [(ngModel)]="member.lookingFor" class="form-control" name="lookingFor"  rows="4"></textarea>
+          <h4 class="mt-2">Intrests</h4>
+          <textarea [(ngModel)]="member.intrestes" class="form-control" name="intrestes"  rows="4"></textarea>
+          <h4 class="mt-2">Location Details:</h4>
+          <div class="row">
+            <div class="col-4">
+                <label for="city">City:</label>
+                <input [(ngModel)]="member.city" class="form-control"  type="text" name="city">
+                
+    
+              </div>
+              <div class="col-4">
+                
+                <label for="country">Country:</label>
+              <input  [(ngModel)]="member.country" class="form-control"  type="text" name="country">
+    
+              </div>
+              <div class="d-grid gap-2 col-4">
+                <button [disabled]="!editFrom.dirty" class="btn btn-success btn-block" type="submit">Save Changes</button>
+              </div>
+          </div>
+          
+          
+          
+
+        </form>
+        </tab>
+        
+        
+        <tab heading="Edit Photos">
+          <p>photoedit</p>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>

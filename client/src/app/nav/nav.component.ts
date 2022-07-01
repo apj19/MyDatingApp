@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { User } from '../_Models/user';
+
 import { AccountService } from '../_services/account.service';
+import{take} from 'rxjs/operators';
+import { User } from '../_Models/user';
 
 @Component({
   selector: 'app-nav',
@@ -12,7 +13,7 @@ import { AccountService } from '../_services/account.service';
 export class NavComponent implements OnInit {
   model:any={}
   loggedIn:boolean=false;
-  name:string='user';
+  name!:string;
   
 
   constructor(private accountservice :AccountService,private router:Router) { }
@@ -27,6 +28,8 @@ export class NavComponent implements OnInit {
       this.router.navigateByUrl('/members');
       this.loggedIn=true;
       this.name=this.model.username;
+      console.log(this.name);
+      
       
     })
   }
@@ -38,12 +41,21 @@ export class NavComponent implements OnInit {
   }
 
   getCurrentUser(){
-    this.accountservice.currentUser$.subscribe(user=>{
-      this.loggedIn=!!user;
+    let obj:any;
+    this.accountservice.currentUser$.pipe(take(1)).subscribe(use=>{
+      obj=use;
+      this.loggedIn=!!use;
+      
+        this.name=obj['username'];
+      
+      
+      
     },error=>{
       console.log(error);
       
     })
   }
+
+  
 
 }

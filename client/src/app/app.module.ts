@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import{HttpClientModule} from '@angular/common/http';
+import{HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import { NavComponent } from './nav/nav.component'
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
@@ -13,6 +13,15 @@ import { MemberListComponent } from './members/member-list/member-list.component
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './messages/messages.component';
 import { UnauthroizedComponent } from './unauthroized/unauthroized.component';
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import { JwtInterceptor } from './_Interceptor/jwt.interceptor';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import{TabsModule} from 'ngx-bootstrap/tabs';
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { LoadingInterceptor } from './_Interceptor/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -24,15 +33,26 @@ import { UnauthroizedComponent } from './unauthroized/unauthroized.component';
     MemberListComponent,
     ListsComponent,
     MessagesComponent,
-    UnauthroizedComponent
+    UnauthroizedComponent,
+    MemberCardComponent,
+    MemberEditComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule,
+    TabsModule.forRoot(),
+    NgxGalleryModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule
+   
   ],
-  providers: [],
+  providers: [
+    {provide:HTTP_INTERCEPTORS,useClass:JwtInterceptor,multi:true},
+    {provide:HTTP_INTERCEPTORS,useClass:LoadingInterceptor,multi:true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

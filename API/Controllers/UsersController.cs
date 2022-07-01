@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 using API.Repository;
 using API.Dtos;
 using AutoMapper;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
-   
+   [Authorize]
     public class UsersController : BaseApiController
     {
         // private readonly DataContext db;
@@ -57,6 +58,22 @@ namespace API.Controllers
             //return Ok(user);
 
             return await userRepo.GetMemberAsync(username);
+        }
+
+
+        [HttpPut]
+
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto){
+            var username=User.FindFirst(ClaimTypes.Name)?.Value;
+            var user= await userRepo.GetUserByUsernameAsync(username);
+
+            mapper.Map(memberUpdateDto,user);
+            userRepo.update(user);
+
+            if(await userRepo.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Failed to update user");
+            
         }
     }
 }
